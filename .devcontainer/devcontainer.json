@@ -4,12 +4,9 @@
   "platform": "linux/amd64",
   "postStartCommand": "/workspaces/${localWorkspaceFolderBasename}/scripts/setup.sh",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    },
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.10"
-    }
+    "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.10" }
   },
-  "forwardPorts": ["9001:7860", "9002:8010", "9003:8011", "9004:8012", "9005:8013"]
+  "forwardPorts": [ "9001:7860", "9002:8010", "9003:8011", "9004:8012", "9005:8013" ],
+   "remoteUser": "root"
 }
