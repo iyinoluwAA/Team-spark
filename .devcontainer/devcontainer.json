@@ -1,8 +1,8 @@
 {
   "name": "Team Spark Container",
  "build": {
-   "dockerfile": "Dockerfile",
-   "context": "."
+   "dockerfile": "../Dockerfile",
+   "context": ".."
  },
   "platform": "linux/amd64",
   "postStartCommand": "/workspaces/${localWorkspaceFolderBasename}/scripts/setup.sh",
