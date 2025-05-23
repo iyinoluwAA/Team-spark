@@ -10,6 +10,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
 # Set working directory
 WORKDIR /workspaces/${LOCAL_WORKSPACE_FOLDER}
 
-# Copy and set up scripts
-COPY scripts /scripts
-RUN chmod +x /scripts/*.sh
+# instead of COPY scripts /scripts
+COPY scripts /workspaces/${LOCAL_WORKSPACE_FOLDER}/scripts
+RUN chmod +x /workspaces/${LOCAL_WORKSPACE_FOLDER}/scripts/*.sh
