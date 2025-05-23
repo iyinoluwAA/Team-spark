@@ -1,7 +1,7 @@
 {
   "name": "Team Spark Container",
  "build": {
-   "dockerfile": "../Dockerfile",
+   "dockerfile": "Dockerfile",
    "context": ".."
  },
   "platform": "linux/amd64",
