@@ -1,9 +1,13 @@
+# .devcontainer/Dockerfile
 FROM ghcr.io/zero2ai/snetdevcontainer:3001251346
-# Root is the default user
 
-# Ensure we’re in the right working dir (not strictly needed if scripts live at /scripts)
+# Install Node.js LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+ && apt-get install -y nodejs
+
+# Use root (default)
 WORKDIR /workspaces/${LOCAL_WORKSPACE_FOLDER}
 
-# Copy your scripts into /scripts
-COPY scripts /scripts
-RUN chmod +x /scripts/*.sh
+# Copy in your scripts—this only runs when you build via `build` in devcontainer.json
+COPY scripts /workspaces/${LOCAL_WORKSPACE_FOLDER}/scripts
+RUN chmod +x /workspaces/${LOCAL_WORKSPACE_FOLDER}/scripts/*.sh

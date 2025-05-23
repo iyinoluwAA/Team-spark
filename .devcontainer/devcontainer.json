@@ -1,12 +1,11 @@
 {
   "name": "Team Spark Container",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": "."
-  },
+ "build": {
+   "dockerfile": "Dockerfile",
+   "context": "."
+ },
   "platform": "linux/amd64",
-  // Force the setup script from the root `/scripts` folder:
-  "postStartCommand": "/scripts/setup.sh",
+  "postStartCommand": "/workspaces/${localWorkspaceFolderBasename}/scripts/setup.sh",
   "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
