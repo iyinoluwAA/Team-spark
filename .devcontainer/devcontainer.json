@@ -5,7 +5,10 @@
    "context": ".."
  },
   "platform": "linux/amd64",
-  "postStartCommand": "/workspaces/${localWorkspaceFolderBasename}/scripts/setup.sh",
+  "workspaceFolder": "/workspaces/spark-container",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/spark-container,type=bind",
+
+  "postStartCommand": "/workspaces/spark-container/scripts/setup.sh",
   "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
