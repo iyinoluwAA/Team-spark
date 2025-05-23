@@ -1,13 +1,16 @@
 {
   "name": "Team Spark Container",
-  "image": "ghcr.io/zero2ai/snetdevcontainer:3001251346",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
   "platform": "linux/amd64",
+  // Force the setup script from the root `/scripts` folder:
   "postStartCommand": "/scripts/setup.sh",
-
+  "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
     "ghcr.io/devcontainers/features/python:1": { "version": "3.10" }
   },
-  "forwardPorts": [ "9001:7860", "9002:8010", "9003:8011", "9004:8012", "9005:8013" ],
-   "remoteUser": "root"
+  "forwardPorts": [ "9001:7860","9002:8010","9003:8011","9004:8012","9005:8013" ]
 }
