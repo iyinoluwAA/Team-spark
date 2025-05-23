@@ -1,2 +1,4 @@
 # ensure shell scripts always have LF endings
 *.sh text eol=lf
+# normalize shell scripts to LF
+spark-container/scripts/*.sh text eol=lf
