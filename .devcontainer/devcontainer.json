@@ -12,5 +12,5 @@
     }
   },
   "forwardPorts": ["9001:7860", "9002:8010", "9003:8011", "9004:8012", "9005:8013"],
-  "remoteUser": "vscode"
+  "remoteUser": "root"
 }
