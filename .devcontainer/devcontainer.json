@@ -1,12 +1,22 @@
 {
 "name": "Team Spark Container",
-  "image": "ghcr.io/zero2ai/snetdevcontainer:3001251346",
+"image": "ghcr.io/zero2ai/snetdevcontainer:3001251346",
   "platform": "linux/amd64",
-  "postCreateCommand": "set -e && apt-get update && apt-get install -y dos2unix && dos2unix /scripts/setup.sh && bash /scripts/snetsdk.sh && pip3 install snet-cli==2.1.2 && rm -f .gitignore && pip3 install -r requirements.txt && cd ../ && rm -rf .devcontainer",
   "remoteUser": "root",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
+    "ghcr.io/devcontainers/features/node:1":   { "version": "lts" },
     "ghcr.io/devcontainers/features/python:1": { "version": "3.10" }
   },
-  "forwardPorts": [ "9001:7860","9002:8010","9003:8011","9004:8012","9005:8013" ]
+  "postCreateCommand": "set -e && \
+    apt-get update && \
+    apt-get install -y dos2unix && \
+    dos2unix /workspaces/${localWorkspaceFolderBasename}/scripts/setup.sh && \
+    bash  /workspaces/${localWorkspaceFolderBasename}/scripts/snetsdk.sh && \
+    pip3 install snet-cli==2.1.2 && \
+    rm -f .gitignore && \
+    pip3 install -r /workspaces/${localWorkspaceFolderBasename}/requirements.txt && \
+    rm -rf .devcontainer",
+  "forwardPorts": [
+    "9001:7860","9002:8010","9003:8011","9004:8012","9005:8013"
+  ]
 }
