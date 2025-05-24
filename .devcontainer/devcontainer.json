@@ -6,7 +6,7 @@
     "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
     "ghcr.io/devcontainers/features/python:1": { "version": "3.10" }
   },
- "postCreateCommand": "set -e && apt-get update && apt-get install -y dos2unix && dos2unix /workspaces/spark-container/scripts/setup.sh && bash /workspaces/spark-container/scripts/snetsdk.sh && pip3 install snet-cli==2.1.2; rm -f .gitignore; pip3 install -r /workspaces/spark-container/requirements.txt;  rm -rf .devcontainer",
+ "postCreateCommand": "apt-get update && apt-get install -y dos2unix && dos2unix /workspaces/spark-container/scripts/setup.sh &&  git config --global http.postBuffer 524288000 &&  bash /workspaces/spark-container/scripts/snetsdk.sh || true && pip3 install snet-cli==2.1.2; rm -f .gitignore; rm -rf .devcontainer",
 
   "forwardPorts": [
     "9001:7860","9002:8010","9003:8011","9004:8012","9005:8013"
