@@ -1,7 +1,7 @@
 set -e
 
 # 1. Run Snet SDK installer script
-bash snetsdk.sh
+bash scripts/snetsdk.sh
 
 # 2. Install Python dependencies if requirements.txt exists
 if [ -f "$(pwd)/requirements.txt" ]; then
