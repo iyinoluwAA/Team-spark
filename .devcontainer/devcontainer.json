@@ -3,7 +3,7 @@
   "image": "ghcr.io/zero2ai/snetdevcontainer:3001251346",
   "remoteUser": "root",
 
-  "postCreateCommand": "apt-get update && apt-get install -y dos2unix && dos2unix scripts/setup.sh && bash scripts/setup.sh && dos2unix scripts/snetsdk.sh && bash scripts/snetsdk.sh && pip3 install snet-cli==2.1.2 && rm -f .gitignore",
+    "postCreateCommand": "apt-get update && apt-get install -y dos2unix && dos2unix scripts/setup.sh && bash scripts/setup.sh && dos2unix scripts/snetsdk.sh && bash scripts/snetsdk.sh && pip3 install snet-cli==2.1.2 && rm -f .gitignore",
 
   "forwardPorts": [
     "9001:7860",
