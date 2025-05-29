@@ -12,18 +12,14 @@ export default function Home() {
       <Image src="/logo.svg" width={96} height={96} alt={"Logo"} />
       <p
         className={
-          "font-openrunde mt-5 text-[24px] leading-[32px] font-semibold tracking-[-0.48px] text-foreground"
+          "mt-5 font-openrunde font-semibold text-[24px] text-foreground leading-[32px] tracking-[-0.48px]"
         }
       >
         Welcome to EmotiChat
       </p>
-      <p
-        className={
-          "mt-2 max-w-[384px] text-center leading-[24px] text-muted-foreground"
-        }
-      >
-        Your AI Companion for Emotional Well-being. Talk or chat with an
-        empathic AI that listens and understands you.
+      <p className={"mt-2 max-w-[384px] text-center text-muted-foreground leading-[24px]"}>
+        Your AI Companion for Emotional Well-being. Talk or chat with an empathic AI that listens
+        and understands you.
       </p>
       <Button asChild className="mt-[48px] max-w-[320px]">
         <Link href="/chat">Start Chatting</Link>
@@ -31,7 +27,7 @@ export default function Home() {
 
       <div
         className={
-          "absolute bottom-6 flex items-center gap-2 text-[13px] leading-[16px] text-muted-foreground"
+          "absolute bottom-6 flex items-center gap-2 text-[13px] text-muted-foreground leading-[16px]"
         }
       >
         <p>© 2025 EmotiChat</p>
@@ -39,9 +35,7 @@ export default function Home() {
         <Link
           href="https://github.com/iyinoluwAA/Team-spark"
           target={"_blank"}
-          className={
-            "transition duration-200 ease-out hover:text-muted-foreground"
-          }
+          className={"transition duration-200 ease-out hover:text-muted-foreground"}
         >
           GitHub
         </Link>

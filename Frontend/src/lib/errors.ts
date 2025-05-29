@@ -12,11 +12,11 @@ import { toast } from "sonner";
  * @returns {string} Human-readable error message
  */
 export function getErrorMessage(err: unknown) {
-	if (err instanceof Error) {
-		return err.message;
-	}
+  if (err instanceof Error) {
+    return err.message;
+  }
 
-	return "Something went wrong. Please try again later.";
+  return "Something went wrong. Please try again later.";
 }
 
 /**
@@ -24,17 +24,17 @@ export function getErrorMessage(err: unknown) {
  * @param {unknown} err - Error object to display
  */
 export function showErrorToast(err: unknown) {
-	const errorMessage = getErrorMessage(err);
-	return toast.error(errorMessage);
+  const errorMessage = getErrorMessage(err);
+  return toast.error(errorMessage);
 }
 
 export interface ApiError {
-	message: string;
-	code?: string;
+  message: string;
+  code?: string;
 }
 
 export function catchError(error: unknown): { data: null; error: string } {
-	console.error("API Error:", error);
-	const message = error instanceof Error ? error.message : "An error occurred";
-	return { data: null, error: message };
+  console.error("API Error:", error);
+  const message = error instanceof Error ? error.message : "An error occurred";
+  return { data: null, error: message };
 }
