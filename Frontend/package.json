@@ -3,12 +3,12 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbopack ./Frontend",
-		"build": "next build ./Frontend",
-		"start": "next start ./Frontend",
-		"lint": "biome lint --write ./Frontend/src",
-		"format": "biome format --write ./Frontend/src",
-		"check": "biome check --write ./Frontend/src"
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome lint --write src",
+		"format": "biome format --write src",
+		"check": "biome check --write src"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.0.1",
