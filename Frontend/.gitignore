@@ -48,4 +48,5 @@ Frontend/next-env.d.ts
 # Cursor
 .cursor/
 
-# Backend specific
+# Docs
+PROJECT-DOC.md
