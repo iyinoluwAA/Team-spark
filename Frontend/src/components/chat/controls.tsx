@@ -1,22 +1,68 @@
 "use client";
 import MicFFT from "@/components/chat/mic-fft";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 import { useVoice } from "@humeai/voice-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Mic, MicOff, Phone } from "lucide-react";
+import { ArrowUp, Mic, MicOff, Phone } from "lucide-react";
+import { useState } from "react";
 
 export default function Controls() {
-  const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
+  const { disconnect, status, isMuted, unmute, mute, micFft, sendUserInput } = useVoice();
+  const [text, setText] = useState("");
+
+  function handleSend() {
+    if (text.trim()) {
+      sendUserInput(text.trim());
+      setText("");
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") handleSend();
+  }
 
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 flex w-full items-center justify-center p-4",
+        "fixed bottom-0 left-0 flex w-full flex-col items-center justify-center gap-4 p-4",
         "bg-gradient-to-t from-card via-card/90 to-card/0",
       )}
     >
+      <AnimatePresence>
+        {status.value === "connected" && (
+          <motion.form
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="mx-auto flex w-full max-w-2xl items-center rounded-full border bg-background px-4 py-2 shadow"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSend();
+            }}
+          >
+            <Input
+              className="flex-1 border-0 bg-transparent text-lg focus:outline-none focus:ring-0"
+              placeholder="Type your message…"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <Button
+              type="submit"
+              size="icon"
+              className="ml-2 rounded-full"
+              disabled={!text.trim()}
+              aria-label="Send message"
+            >
+              <ArrowUp className="size-5" />
+            </Button>
+          </motion.form>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {status.value === "connected" ? (
           <motion.div

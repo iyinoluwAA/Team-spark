@@ -3,29 +3,30 @@ import Expressions from "@/components/chat/emotions";
 import { cn } from "@/lib/utils";
 import { useVoice } from "@humeai/voice-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ComponentRef, forwardRef } from "react";
+import { forwardRef } from "react";
 
-const Messages = forwardRef<
-  ComponentRef<typeof motion.div>,
-  Record<never, never>
->(function Messages(_, ref) {
-  const { messages } = useVoice();
+const Messages = forwardRef<HTMLDivElement, Record<string, never>>(
+  function Messages(_, ref) {
+    const { messages } = useVoice();
 
-  return (
-    <motion.div
-      layoutScroll
-      className={"grow overflow-auto rounded-md p-4"}
-      ref={ref}
-    >
+    return (
       <motion.div
-        className={"mx-auto flex w-full max-w-2xl flex-col gap-4 pb-24"}
+        layoutScroll
+        className={"grow overflow-auto rounded-md p-4"}
+        ref={ref}
       >
-        <AnimatePresence mode={"popLayout"}>
-          {messages.map((msg, index) => {
-            if (
-              msg.type === "user_message" ||
-              msg.type === "assistant_message"
-            ) {
+        <motion.div
+          className={"mx-auto flex w-full max-w-2xl flex-col gap-4 pb-24"}
+        >
+          <AnimatePresence mode={"popLayout"}>
+            {messages.map((msg, index) => {
+              if (
+                msg.type !== "user_message" &&
+                msg.type !== "assistant_message"
+              ) {
+                return null;
+              }
+
               const content = msg.message.content ?? "";
               return (
                 <motion.div
@@ -60,14 +61,12 @@ const Messages = forwardRef<
                   <Expressions values={{ ...msg.models.prosody?.scores }} />
                 </motion.div>
               );
-            }
-
-            return null;
-          })}
-        </AnimatePresence>
+            })}
+          </AnimatePresence>
+        </motion.div>
       </motion.div>
-    </motion.div>
-  );
-});
+    );
+  }
+);
 
 export default Messages;

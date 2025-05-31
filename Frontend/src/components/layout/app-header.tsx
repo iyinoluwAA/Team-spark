@@ -27,15 +27,15 @@ const getTitleForPath = (pathname: string): string => {
 export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const title = getTitleForPath(pathname);
-  const isStaticPage = !!STATIC_PAGES[pathname];
+  // const title = getTitleForPath(pathname);
+  // const isStaticPage = !!STATIC_PAGES[pathname];
 
   return (
     <div className="relative flex h-[56px] w-full flex-none items-center justify-center">
       <span className="absolute left-4 flex items-center">
         <MobileNav />
       </span>
-      <p className="font-medium text-[18px] capitalize leading-[24px]">{title}</p>
+      {/* No title or content for now */}
     </div>
   );
 }

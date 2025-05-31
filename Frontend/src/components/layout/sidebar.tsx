@@ -8,6 +8,7 @@ import IconChat from "@/components/icons/bubble.svg";
 import IconChatFill from "@/components/icons/bubble.svg";
 import IconProfile from "@/components/icons/person.svg";
 import IconProfileFill from "@/components/icons/personFill.svg";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -28,12 +29,11 @@ export function Sidebar() {
   ];
 
   return (
-    <div className="hidden h-full w-[256px] flex-none flex-col items-center gap-3 bg-background px-3 pt-4 pb-6 shadow-[inset_-1px_0px_0px_0px_var(--border)] md:flex">
-      <div className="flex w-full px-3 py-2">
-        <Image src="/logo-with-text.svg" height={40} width={84} alt="logo" />
+    <div className="fixed top-0 left-0 z-30 hidden h-screen w-22 flex-none flex-col items-center bg-background py-4 shadow-[inset_-1px_0px_0px_0px_var(--border)] md:flex">
+      <div className="mb-6 flex flex-col items-center">
+        <Image src="/logo.svg" height={40} width={40} alt="logo" />
       </div>
-
-      <div className="flex w-full flex-col gap-0.5">
+      <div className="flex w-full flex-1 flex-col items-center gap-2">
         {navLinks.map((link) => {
           const isActive = pathname === link.href;
           const IconComponent = isActive ? link.iconFill : link.icon;
@@ -41,30 +41,23 @@ export function Sidebar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center gap-3 rounded-[12px] px-3 py-3 font-medium leading-[24px] transition-colors ${
+              className={`flex w-16 flex-col items-center gap-1 rounded-xl px-0 py-3 transition-colors ${
                 isActive
                   ? "bg-muted text-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               }`}
               aria-current={isActive ? "page" : undefined}
             >
-              <span className="p-0.5 text-[20px]">{IconComponent && <IconComponent />}</span>
-              <p>{link.label}</p>
+              <span className="flex items-center justify-center text-[22px]">
+                {IconComponent && <IconComponent />}
+              </span>
+              <span className="font-medium text-xs leading-tight">{link.label}</span>
             </Link>
           );
         })}
       </div>
-
-      <div className="mt-auto flex items-center gap-2 text-[13px] text-muted-foreground leading-[16px]">
-        <p>© 2025 EmotiChat</p>
-        <p className="text-muted-foreground">·</p>
-        <Link
-          href="https://github.com/iyinoluwAA/Team-spark"
-          target="_blank"
-          className="transition-colors hover:text-foreground"
-        >
-          GitHub
-        </Link>
+      <div className="mt-auto mb-2">
+        <ThemeToggle />
       </div>
     </div>
   );

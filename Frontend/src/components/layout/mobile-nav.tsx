@@ -45,12 +45,11 @@ export function MobileNav() {
         <Menu className="size-6" />
       </button>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="left" className="w-[256px] p-0">
-          <div className="flex w-full px-3 py-2">
-            <Image src="/logo-with-text.svg" height={40} width={84} alt="logo" />
+        <SheetContent side="left" className="flex w-22 flex-col items-center p-0">
+          <div className="mt-6 mb-6 flex flex-col items-center">
+            <Image src="/logo.svg" height={40} width={40} alt="logo" />
           </div>
-          <div className="h-6" />
-          <nav className="flex flex-col gap-0.5">
+          <nav className="flex w-full flex-col items-center gap-2">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               const IconComponent = isActive ? link.iconFill : link.icon;
@@ -58,7 +57,7 @@ export function MobileNav() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-3 rounded-[12px] px-3 py-3 font-medium leading-[24px] transition-colors ${
+                  className={`flex w-16 flex-col items-center gap-1 rounded-xl px-0 py-3 transition-colors ${
                     isActive
                       ? "bg-muted text-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -66,8 +65,10 @@ export function MobileNav() {
                   aria-current={isActive ? "page" : undefined}
                   onClick={() => setOpen(false)}
                 >
-                  <span className="p-0.5 text-[20px]">{IconComponent && <IconComponent />}</span>
-                  <p>{link.label}</p>
+                  <span className="flex items-center justify-center text-[22px]">
+                    {IconComponent && <IconComponent />}
+                  </span>
+                  <span className="font-medium text-xs leading-tight">{link.label}</span>
                 </Link>
               );
             })}
