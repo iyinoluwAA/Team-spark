@@ -1,8 +1,6 @@
 "use client";
 
-import IconChevronLeft from "@/components/icons/chevron-left.svg";
-import { MobileNav } from "@/components/mobile-nav";
-import { Menu } from "lucide-react";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { usePathname, useRouter } from "next/navigation";
 
 interface AppHeaderProps {
