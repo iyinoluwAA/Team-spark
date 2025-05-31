@@ -10,7 +10,8 @@ import { ArrowUp, Mic, MicOff, Phone } from "lucide-react";
 import { useState } from "react";
 
 export default function Controls() {
-  const { disconnect, status, isMuted, unmute, mute, micFft, sendUserInput } = useVoice();
+  const { disconnect, status, isMuted, unmute, mute, micFft, sendUserInput } =
+    useVoice();
   const [text, setText] = useState("");
 
   function handleSend() {
@@ -28,7 +29,7 @@ export default function Controls() {
     <div
       className={cn(
         "fixed bottom-0 left-0 flex w-full flex-col items-center justify-center gap-4 p-4",
-        "bg-gradient-to-t from-card via-card/90 to-card/0",
+        "bg-gradient-to-t from-white via-white/90 to-white/0 dark:from-gray-900 dark:via-gray-900/90 dark:to-gray-900/0"
       )}
     >
       <AnimatePresence>
@@ -37,7 +38,7 @@ export default function Controls() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="mx-auto flex w-full max-w-2xl items-center rounded-full border bg-background px-4 py-2 shadow"
+            className="mx-auto flex w-full max-w-2xl items-center rounded-full border border-emerald-200 bg-white px-4 py-2 shadow-md dark:border-emerald-900/50 dark:bg-gray-900"
             onSubmit={(e) => {
               e.preventDefault();
               handleSend();
@@ -53,7 +54,7 @@ export default function Controls() {
             <Button
               type="submit"
               size="icon"
-              className="ml-2 rounded-full"
+              className="ml-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
               disabled={!text.trim()}
               aria-label="Send message"
             >
@@ -79,7 +80,7 @@ export default function Controls() {
               opacity: 0,
             }}
             className={
-              "flex items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-sm"
+              "flex items-center gap-4 rounded-lg border border-emerald-200 bg-white p-4 shadow-md dark:border-emerald-900/50 dark:bg-gray-900"
             }
           >
             <Toggle
@@ -91,12 +92,20 @@ export default function Controls() {
                   mute();
                 }
               }}
+              className="data-[state=on]:bg-emerald-600 data-[state=on]:text-white"
             >
-              {isMuted ? <MicOff className={"size-4"} /> : <Mic className={"size-4"} />}
+              {isMuted ? (
+                <MicOff className={"size-4"} />
+              ) : (
+                <Mic className={"size-4"} />
+              )}
             </Toggle>
 
             <div className={"relative grid h-8 w-48 shrink grow-0"}>
-              <MicFFT fft={micFft} className={"fill-current"} />
+              <MicFFT
+                fft={micFft}
+                className={"fill-emerald-500 dark:fill-emerald-400"}
+              />
             </div>
 
             <Button
@@ -107,7 +116,11 @@ export default function Controls() {
               variant={"destructive"}
             >
               <span>
-                <Phone className={"size-4 opacity-50"} strokeWidth={2} stroke={"currentColor"} />
+                <Phone
+                  className={"size-4 opacity-50"}
+                  strokeWidth={2}
+                  stroke={"currentColor"}
+                />
               </span>
               <span>End Call</span>
             </Button>

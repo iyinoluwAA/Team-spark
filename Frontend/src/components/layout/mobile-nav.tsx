@@ -37,7 +37,7 @@ export function MobileNav() {
   return (
     <>
       <button
-        className="inline-flex items-center justify-center p-2 text-muted-foreground hover:text-foreground md:hidden"
+        className="inline-flex items-center justify-center p-2 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 md:hidden"
         aria-label="Open sidebar"
         onClick={() => setOpen(true)}
         type="button"
@@ -45,7 +45,10 @@ export function MobileNav() {
         <Menu className="size-6" />
       </button>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="left" className="flex w-22 flex-col items-center p-0">
+        <SheetContent
+          side="left"
+          className="flex w-22 flex-col items-center p-0 bg-white dark:bg-gray-900"
+        >
           <div className="mt-6 mb-6 flex flex-col items-center">
             <Image src="/logo.svg" height={40} width={40} alt="logo" />
           </div>
@@ -59,8 +62,8 @@ export function MobileNav() {
                   href={link.href}
                   className={`flex w-16 flex-col items-center gap-1 rounded-xl px-0 py-3 transition-colors ${
                     isActive
-                      ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                      : "text-muted-foreground hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-300"
                   }`}
                   aria-current={isActive ? "page" : undefined}
                   onClick={() => setOpen(false)}
@@ -68,7 +71,9 @@ export function MobileNav() {
                   <span className="flex items-center justify-center text-[22px]">
                     {IconComponent && <IconComponent />}
                   </span>
-                  <span className="font-medium text-xs leading-tight">{link.label}</span>
+                  <span className="font-medium text-xs leading-tight">
+                    {link.label}
+                  </span>
                 </Link>
               );
             })}
