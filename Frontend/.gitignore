@@ -48,4 +48,8 @@ Frontend/next-env.d.ts
 # Cursor
 .cursor/
 
-# Backend specific
+# Docs
+PROJECT-DOC.md
+hume-evi-next-js-starter/
+hume-api-examples/
+hume-typescript-sdk/
