@@ -26,15 +26,11 @@ export default function StartConversation({
   // Button component for reuse
   const ConnectButton = () => (
     <Button
-      className="z-50 flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
+      className="z-50 flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700"
       onClick={handleConnect}
     >
       <span>
-        <Phone
-          className="size-4 opacity-50"
-          strokeWidth={2}
-          stroke="currentColor"
-        />
+        <Phone className="size-4 opacity-50" strokeWidth={2} stroke="currentColor" />
       </span>
       <span>Start Call</span>
     </Button>
@@ -49,9 +45,7 @@ export default function StartConversation({
   return (
     <AnimatePresence>
       <motion.div
-        className={
-          "fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900 p-4"
-        }
+        className={"fixed inset-0 flex items-center justify-center bg-white p-4 dark:bg-gray-900"}
         initial="initial"
         animate="enter"
         exit="exit"

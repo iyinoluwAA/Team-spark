@@ -37,7 +37,7 @@ export function MobileNav() {
   return (
     <>
       <button
-        className="inline-flex items-center justify-center p-2 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 md:hidden"
+        className="inline-flex items-center justify-center p-2 text-muted-foreground hover:text-emerald-600 md:hidden dark:hover:text-emerald-400"
         aria-label="Open sidebar"
         onClick={() => setOpen(true)}
         type="button"
@@ -47,7 +47,7 @@ export function MobileNav() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="left"
-          className="flex w-22 flex-col items-center p-0 bg-white dark:bg-gray-900"
+          className="flex w-22 flex-col items-center bg-white p-0 dark:bg-gray-900"
         >
           <div className="mt-6 mb-6 flex flex-col items-center">
             <Image src="/logo.svg" height={40} width={40} alt="logo" />
@@ -71,9 +71,7 @@ export function MobileNav() {
                   <span className="flex items-center justify-center text-[22px]">
                     {IconComponent && <IconComponent />}
                   </span>
-                  <span className="font-medium text-xs leading-tight">
-                    {link.label}
-                  </span>
+                  <span className="font-medium text-xs leading-tight">{link.label}</span>
                 </Link>
               );
             })}

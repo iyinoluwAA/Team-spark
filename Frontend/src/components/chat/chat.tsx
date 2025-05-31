@@ -6,7 +6,7 @@ import StartConversation from "@/components/chat/start-conversation";
 import { VoiceProvider, useVoice } from "@humeai/voice-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 // Move useTypewriter outside the component
 function useTypewriter(text: string, speed = 70) {
@@ -69,7 +69,6 @@ function HomeScreen() {
 
 export default function Chat({ accessToken }: { accessToken: string }) {
   const timeout = useRef<number | null>(null);
-  const messagesRef = useRef<HTMLDivElement>(null);
   const configId = process.env.NEXT_PUBLIC_HUME_CONFIG_ID;
 
   return (
@@ -81,28 +80,30 @@ export default function Chat({ accessToken }: { accessToken: string }) {
           window.clearTimeout(timeout.current);
         }
         timeout.current = window.setTimeout(() => {
-          if (messagesRef.current) {
-            const scrollHeight = messagesRef.current.scrollHeight;
-            messagesRef.current.scrollTo({
-              top: scrollHeight,
-              behavior: "smooth",
-            });
-          }
+          // Handle scrolling in the inner component instead
         }, 200);
       }}
     >
-      <ChatContent messagesRef={messagesRef} />
+      <ChatContent />
     </VoiceProvider>
   );
 }
 
-// Define a proper type for the component props
-type ChatContentProps = {
-  messagesRef: React.RefObject<HTMLDivElement>;
-};
+function ChatContent() {
+  const { status, messages } = useVoice();
+  // Create the ref here instead of passing it down
+  const messagesRef = useRef<HTMLDivElement>(null);
 
-function ChatContent({ messagesRef }: ChatContentProps) {
-  const { status } = useVoice();
+  // Handle scrolling here
+  useEffect(() => {
+    if (messages.length > 0 && messagesRef.current) {
+      const scrollHeight = messagesRef.current.scrollHeight;
+      messagesRef.current.scrollTo({
+        top: scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages.length]);
 
   useEffect(() => {
     const scrollWrapper = document.querySelector(".hide-scrollbar");
@@ -127,9 +128,7 @@ function ChatContent({ messagesRef }: ChatContentProps) {
   return status.value !== "connected" ? (
     <HomeScreen />
   ) : (
-    <div
-      className={"relative mx-auto flex w-full grow flex-col overflow-hidden"}
-    >
+    <div className={"relative mx-auto flex w-full grow flex-col overflow-hidden"}>
       <Messages ref={messagesRef} />
       <Controls />
       <StartConversation />
