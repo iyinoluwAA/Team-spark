@@ -32,7 +32,7 @@ export default function StartConversation({
       <span>
         <Phone className="size-4 opacity-50" strokeWidth={2} stroke="currentColor" />
       </span>
-      <span>Start Call</span>
+      <span>Start Convo or call</span>
     </Button>
   );
 

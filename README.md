@@ -1,5 +1,11 @@
 # EmotiChat AI - Your AI Companion for Emotional Wellness & Healing
 
+## Video demo of EmotiChat AI
+https://youtu.be/obLh5EK1nqw?si=o3Iefi--lRcTwDap
+
+## EmotiChat Website Url
+emotichat-ai.vercel.app/
+
 EmotiChat is an AI-driven emotional wellness and healing platform designed to help individuals recognize, reflect, and heal from deep-rooted emotional wounds through personalized conversations. Simply talk or chat with an empathetic AI that listens to your pains and understands you based on your emotional state, helping you remain calm and grounded amidst life's challenges.
 
 ## Problem Statement
