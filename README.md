@@ -115,7 +115,7 @@ EmotiChat AI is an AI-driven emotional wellness platform that helps individuals 
 
     Open [http://localhost:3000](http://localhost:3000) in your browser
 
-### Backend Setup (For Future Development)
+### Backend Setup (For Phase 2)
 
 1. Navigate to the backend directory:
 
