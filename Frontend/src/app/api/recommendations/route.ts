@@ -1,8 +1,8 @@
-// app/api/recommendations/route.ts
+// src/app/api/recommendations/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 
-// --- Type definitions for what we return ---
+
 type BreathingGuide = {
   id: string;
   title: string;
@@ -35,7 +35,7 @@ type RecommendationsResponse = {
 };
 
 export async function GET(request: NextRequest) {
-  // 1) Extract “emotion” from the query string, e.g. /api/recommendations?emotion=anxiety
+
   const { searchParams } = new URL(request.url);
   const emotion = searchParams.get("emotion")?.toLowerCase();
 
@@ -46,9 +46,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // 2) Fetch from breathing_meditation_guides where emotion_tag == emotion
+  // 1) Fetch breathing_meditation_guides
   const { data: breathing, error: breatheErr } = await supabase
-    .from<BreathingGuide>("breathing_meditation_guides")
+    .from<BreathingGuide, BreathingGuide>("breathing_meditation_guides")
     .select("*")
     .eq("emotion_tag", emotion)
     .order("created_at", { ascending: false })
@@ -62,9 +62,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // 3) Fetch from emotion_music_therapy where emotion_tag == emotion
+  // 2) Fetch emotion_music_therapy
   const { data: music, error: musicErr } = await supabase
-    .from<MusicTherapy>("emotion_music_therapy")
+    .from<MusicTherapy, MusicTherapy>("emotion_music_therapy")
     .select("*")
     .eq("emotion_tag", emotion)
     .order("created_at", { ascending: false })
@@ -78,9 +78,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // 4) Fetch from inspirational_quotes where emotion_tag == emotion
+  // 3) Fetch inspirational_quotes
   const { data: quotes, error: quoteErr } = await supabase
-    .from<InspirationalQuote>("inspirational_quotes")
+    .from<InspirationalQuote, InspirationalQuote>("inspirational_quotes")
     .select("*")
     .eq("emotion_tag", emotion)
     .order("created_at", { ascending: false })
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // 5) Bundle them into a single response payload
+  
   const responsePayload: RecommendationsResponse = {
     breathing: breathing ?? [],
     music: music ?? [],
