@@ -3,7 +3,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 
-
 type BreathingGuide = {
   id: string;
   title: string;
@@ -36,8 +35,7 @@ type RecommendationsResponse = {
 };
 
 export async function GET(request: NextRequest) {
- 
-    const { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const emotion = searchParams.get("emotion")?.toLowerCase();
 
   if (!emotion) {
@@ -48,9 +46,9 @@ export async function GET(request: NextRequest) {
   }
 
   // 1) Fetch breathing_meditation_guides
-  const { data: breathing, error: breatheErr } = await supabase
+  const { data: rawBreathing, error: breatheErr } = await supabase
     .from("breathing_meditation_guides")
-    .select<BreathingGuide>("*")
+    .select("*")
     .eq("emotion_tag", emotion)
     .order("created_at", { ascending: false })
     .limit(3);
@@ -63,13 +61,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Cast the raw data into our typed interface
+  const breathing: BreathingGuide[] = (rawBreathing as any) ?? [];
+
   // 2) Fetch emotion_music_therapy
-  const { data: music, error: musicErr } = await supabase
+  const { data: rawMusic, error: musicErr } = await supabase
     .from("emotion_music_therapy")
-    .select<MusicTherapy>("*")
-  .eq("emotion_tag", emotion)
-  .order("created_at", { ascending: false })
-  .limit(3);
+    .select("*")
+    .eq("emotion_tag", emotion)
+    .order("created_at", { ascending: false })
+    .limit(3);
 
   if (musicErr) {
     console.error("Supabase error (music):", musicErr.message);
@@ -79,13 +80,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Cast to typed interface
+  const music: MusicTherapy[] = (rawMusic as any) ?? [];
+
   // 3) Fetch inspirational_quotes
-  const { data: quotes, error: quoteErr } = await supabase
+  const { data: rawQuotes, error: quoteErr } = await supabase
     .from("inspirational_quotes")
-    .select<InspirationalQuote>("*")
-  .eq("emotion_tag", emotion)
-  .order("created_at", { ascending: false })
-  .limit(3);
+    .select("*")
+    .eq("emotion_tag", emotion)
+    .order("created_at", { ascending: false })
+    .limit(3);
 
   if (quoteErr) {
     console.error("Supabase error (quotes):", quoteErr.message);
@@ -95,11 +99,13 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  
+  // Cast to typed interface
+  const quotes: InspirationalQuote[] = (rawQuotes as any) ?? [];
+
   const responsePayload: RecommendationsResponse = {
-    breathing: breathing ?? [],
-    music: music ?? [],
-    quotes: quotes ?? [],
+    breathing,
+    music,
+    quotes,
   };
 
   return NextResponse.json(responsePayload);
