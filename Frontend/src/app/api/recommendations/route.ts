@@ -1,4 +1,5 @@
 // src/app/api/recommendations/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -35,8 +36,8 @@ type RecommendationsResponse = {
 };
 
 export async function GET(request: NextRequest) {
-
-  const { searchParams } = new URL(request.url);
+ 
+    const { searchParams } = new URL(request.url);
   const emotion = searchParams.get("emotion")?.toLowerCase();
 
   if (!emotion) {
@@ -48,8 +49,8 @@ export async function GET(request: NextRequest) {
 
   // 1) Fetch breathing_meditation_guides
   const { data: breathing, error: breatheErr } = await supabase
-    .from<BreathingGuide, BreathingGuide>("breathing_meditation_guides")
-    .select("*")
+    .from("breathing_meditation_guides")
+    .select<BreathingGuide>("*")
     .eq("emotion_tag", emotion)
     .order("created_at", { ascending: false })
     .limit(3);
@@ -64,11 +65,11 @@ export async function GET(request: NextRequest) {
 
   // 2) Fetch emotion_music_therapy
   const { data: music, error: musicErr } = await supabase
-    .from<MusicTherapy, MusicTherapy>("emotion_music_therapy")
-    .select("*")
-    .eq("emotion_tag", emotion)
-    .order("created_at", { ascending: false })
-    .limit(3);
+    .from("emotion_music_therapy")
+    .select<MusicTherapy>("*")
+  .eq("emotion_tag", emotion)
+  .order("created_at", { ascending: false })
+  .limit(3);
 
   if (musicErr) {
     console.error("Supabase error (music):", musicErr.message);
@@ -80,11 +81,11 @@ export async function GET(request: NextRequest) {
 
   // 3) Fetch inspirational_quotes
   const { data: quotes, error: quoteErr } = await supabase
-    .from<InspirationalQuote, InspirationalQuote>("inspirational_quotes")
-    .select("*")
-    .eq("emotion_tag", emotion)
-    .order("created_at", { ascending: false })
-    .limit(3);
+    .from("inspirational_quotes")
+    .select<InspirationalQuote>("*")
+  .eq("emotion_tag", emotion)
+  .order("created_at", { ascending: false })
+  .limit(3);
 
   if (quoteErr) {
     console.error("Supabase error (quotes):", quoteErr.message);
