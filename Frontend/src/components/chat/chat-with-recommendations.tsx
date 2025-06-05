@@ -1,4 +1,3 @@
-// src/components/chat/chat-with-recommendations.tsx
 "use client";
 
 import Chat from "@/components/chat/chat";
@@ -28,17 +27,12 @@ export default function ChatWithRecommendations({
     //
     // 1) Find the latest user_message that has prosody.scores
     //
-    // We need to tell TS “this message definitely has a .models.prosody.scores”
-    // so that we can safely read models.prosody.scores.
+    // We first search `messages` and ensure at runtime that `(m as any).models.prosody.scores` is defined.
     //
     const rawLatest = [...messages]
       .reverse()
       .find((m) => {
-        // First, ensure it's a “user_message”
         if (m.type !== "user_message") return false;
-
-        // Then, check at runtime that `m.models.prosody.scores` is defined.
-        // We cast to `any` to bypass TS complaining “property 'models' does not exist…”
         const possibleModels = (m as any).models;
         return !!(
           possibleModels &&
@@ -47,28 +41,26 @@ export default function ChatWithRecommendations({
         );
       });
 
-    // If our `.find()` returns undefined, there's nothing to do.
+    // If there is no such message, do nothing.
     if (!rawLatest) {
       return;
     }
 
     //
-    // 2) Now that we know “rawLatest” really does have `models.prosody.scores`,
-    // we can grab it. We cast it to Record<string, number> so TS knows “scores” is numeric.
+    // 2) Now that we know `rawLatest` definitely has `models.prosody.scores`,
+    // we cast it **via unknown** to tell TS “yes, we’ve checked at runtime.”
     //
-    const latestUserMsg = rawLatest as {
+    const latestUserMsg = (rawLatest as unknown) as {
       models: { prosody: { scores: Record<string, number> } };
     };
 
-    if (
-      status.value === "connected" &&
-      latestUserMsg.models.prosody.scores
-    ) {
-      const scores = latestUserMsg.models.prosody
-        .scores as Record<string, number>;
+    if (status.value === "connected" && latestUserMsg.models.prosody.scores) {
+      const scores = latestUserMsg.models.prosody.scores as Record<
+        string,
+        number
+      >;
 
-      // 3) Compute “dominantEmotion” by sorting the [key, value] pairs by the numeric value `b - a`.
-      // Now TS knows “a” and “b” are numbers, so subtraction is OK.
+      // 3) Compute the dominant emotion by sorting the [key, value] pairs
       const dominantEmotion = (
         Object.entries(scores)
           .sort(([, a], [, b]) => b - a)
@@ -78,12 +70,14 @@ export default function ChatWithRecommendations({
       const emotionLower = dominantEmotion.toLowerCase();
 
       //
-      // 4) Only fetch if this emotion is different from lastFetchedEmotion
+      // 4) Only fetch recommendations if this emotion is different
       //
       if (emotionLower !== lastFetchedEmotion.current) {
         lastFetchedEmotion.current = emotionLower;
 
-        fetch(`/api/recommendations?emotion=${encodeURIComponent(emotionLower)}`)
+        fetch(`/api/recommendations?emotion=${encodeURIComponent(
+          emotionLower
+        )}`)
           .then(async (res) => {
             if (!res.ok) {
               console.error("Recommendation API error:", await res.text());
@@ -108,15 +102,14 @@ export default function ChatWithRecommendations({
   }, [messages, status.value]);
 
   //
-  // If Hume is not connected yet, render Chat’s built‑in HomeScreen
-  // (the <Chat> component will show it automatically when not connected).
+  // If Hume hasn’t connected yet, just render <Chat /> (it shows HomeScreen internally).
   //
   if (status.value !== "connected") {
     return <Chat accessToken={accessToken} />;
   }
 
   //
-  // Otherwise, show the chat plus our RecommendationsPanel below it.
+  // Otherwise, render the Chat plus our RecommendationsPanel below.
   //
   return (
     <>
