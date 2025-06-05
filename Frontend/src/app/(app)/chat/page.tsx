@@ -1,5 +1,5 @@
 import { getHumeAccessToken } from "@/ai/humeai";
-import { ChatClient } from "@/components/chat/chat-client";
+import ChatWithRecommendations from "@/components/chat/chat-with-recommendations";
 
 export default async function ChatPage() {
   const accessToken = await getHumeAccessToken();
@@ -8,5 +8,5 @@ export default async function ChatPage() {
     throw new Error("Failed to get Hume access token");
   }
 
-  return <ChatClient accessToken={accessToken} />;
+  return <ChatWithRecommendations accessToken={accessToken} />;
 }
