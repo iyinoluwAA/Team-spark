@@ -1,84 +1,85 @@
 // src/components/chat/chat-with-recommendations.tsx
 "use client";
 
-import Chat from "@/components/chat/chat"; // your existing Chat (which itself does <VoiceProvider>)
+import Chat from "@/components/chat/chat"; // your existing Chat (which itself wraps a VoiceProvider)
 import RecommendationsPanel from "@/components/chat/recommendations-panel";
+import type { JSONMessage, ConnectionMessage } from "@humeai/voice-react";
 import { useVoice } from "@humeai/voice-react";
 import { useEffect, useRef, useState } from "react";
 
-/**
- * ChatWithRecommendations simply renders <Chat> (which installs VoiceProvider).
- * Once Chat is mounted, its VoiceProvider is in the React tree. Only then do we
- * call `useVoice()` inside the nested <FetchRecommendationsInsideProvider />.
- */
-export default function ChatWithRecommendations({ accessToken }: { accessToken: string }) {
+export default function ChatWithRecommendations({
+  accessToken,
+}: {
+  accessToken: string;
+}) {
   return (
     <>
-      {/* First we render Chat, which internally does:
-           <VoiceProvider auth={…}>
-             <ChatContent/>
-           </VoiceProvider>
-         That ensures a VoiceProvider is available further down. */}
+      {/* First render <Chat> so that its <VoiceProvider> appears in the tree */}
       <Chat accessToken={accessToken} />
 
-      {/**
-        Now that <Chat> has mounted, the VoiceProvider exists. We render a child
-        component that can safely call useVoice() and fetch /api/recommendations.
-      */}
+      {/* Now we mount a child that calls useVoice() _after_ VoiceProvider is present */}
       <FetchRecommendationsInsideProvider />
     </>
   );
 }
 
-/**
- * FetchRecommendationsInsideProvider is mounted _after_ Chat’s VoiceProvider is in place.
- * It can call useVoice() without complaint.
- */
 function FetchRecommendationsInsideProvider() {
-  // Now it’s safe to use useVoice() because Chat’s <VoiceProvider> is already in the tree.
+  // SAFE to call useVoice() here because <Chat> has already mounted its VoiceProvider above.
   const { status, messages } = useVoice();
+  const messagesRef = useRef<HTMLDivElement>(null);
 
-  // Find the latest user message that contains prosody.scores (if any):
-  const rawLatestMessage = [...messages]
+  // Helper: scan messages from newest to oldest and pick the first one that has prosody.scores
+  
+    const rawLatestMessage = messages
+    .slice()
     .reverse()
-    .find((m) => m.type === "user_message" && Boolean((m as any).models?.prosody?.scores));
+    .find((m: JSONMessage | ConnectionMessage) => {
+        return (
+        m.type === "user_message" &&
+        typeof (m as any).models?.prosody?.scores === "object"
+        );
+    });
 
-  // We cast to the known shape so TypeScript knows “scores” is numeric.
-  // If your type definitions differ, adjust this accordingly.
-  const latestUserMsg = rawLatestMessage as
-    | {
-        models: { prosody: { scores: Record<string, number> } };
-      }
-    | null;
+  // At this point, rawLatestMessage is either undefined (if no message with prosody)
+  // or it is some message object with .models.prosody.scores present. We'll cast it to `any`
+  // so TypeScript stops complaining—because we've already done the runtime check above.
+  const latestUserMsg = (rawLatestMessage as any) || null;
 
-  // Extract “scores” or null if not present
-  const scores: Record<string, number> | null = latestUserMsg?.models.prosody.scores ?? null;
+  // Extract numeric scores safely, or null if absent
+  const scores: Record<string, number> | null =
+    latestUserMsg?.models?.prosody?.scores ?? null;
 
-  // Compute the dominantEmotion string by picking the key with the highest score
+  // Compute "dominantEmotion" by picking the key with the highest score
   let dominantEmotion: string | null = null;
   if (scores) {
-    dominantEmotion = Object.entries(scores)
-      .sort(([_, aVal], [__, bVal]) => bVal - aVal) // descending
-      .map(([key]) => key)[0]!;
+    const sorted = Object.entries(scores).sort(([, aVal], [, bVal]) => bVal - aVal);
+    if (sorted.length > 0) {
+      dominantEmotion = sorted[0][0]; // the emotion‐tag string
+    }
   }
 
-  // Lowercase to query our API
+  // Lowercase version for API call (e.g. "anxiety", "sad", etc.)
   const emotionLower = dominantEmotion?.toLowerCase() ?? null;
 
-  // Keep track of which emotion we last fetched recommendations for
-  const lastFetched = useRef<string | null>(null);
+  // Track the last emotion for which we fetched recommendations
+  const lastFetchedEmotion = useRef<string | null>(null);
 
-  // State to hold the fetched recommendations
+  // Store fetched recommendations
   const [recommendations, setRecommendations] = useState<{
     breathing: any[];
     music: any[];
     quotes: any[];
   }>({ breathing: [], music: [], quotes: [] });
 
-  // Whenever we get a new “dominantEmotion” and we are connected, fetch /api/recommendations
+  // Whenever Hume gives us a new dominantEmotion, fetch /api/recommendations
   useEffect(() => {
-    if (status.value === "connected" && emotionLower && emotionLower !== lastFetched.current) {
-      lastFetched.current = emotionLower;
+    if (
+      status.value === "connected" &&        // must be connected
+      emotionLower &&                         // we have a detectedEmotion
+      emotionLower !== lastFetchedEmotion.current // and it’s different from last time
+    ) {
+      lastFetchedEmotion.current = emotionLower;
+
       fetch(`/api/recommendations?emotion=${encodeURIComponent(emotionLower)}`)
         .then(async (res) => {
           if (!res.ok) {
@@ -100,12 +101,12 @@ function FetchRecommendationsInsideProvider() {
     }
   }, [status.value, emotionLower]);
 
-  // If Chat hasn’t connected to Hume yet, don’t render anything
+  // If we haven’t connected to Hume yet, render nothing (Chat itself shows its HomeScreen)
   if (status.value !== "connected") {
     return null;
   }
 
-  // Once connected, show the recommendations panel below the Chat UI
+  // Once connected, append the RecommendationsPanel below Chat’s UI
   return (
     <div className="relative mx-auto flex w-full grow flex-col overflow-hidden">
       <RecommendationsPanel recommendations={recommendations} />
