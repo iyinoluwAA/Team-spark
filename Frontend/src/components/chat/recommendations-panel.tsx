@@ -1,4 +1,4 @@
-// components/chat/recommendations-panel.tsx
+
 "use client";
 
 import { motion } from "framer-motion";

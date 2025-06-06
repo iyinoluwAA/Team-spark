@@ -1,10 +1,9 @@
-// src/components/chat/chat-with-recommendations.tsx
+
 "use client";
 
-import Chat from "@/components/chat/chat"; // your existing Chat (which itself wraps a VoiceProvider)
+import { VoiceProvider, useVoice } from "@humeai/voice-react";
+import Chat from "@/components/chat/chat"; 
 import RecommendationsPanel from "@/components/chat/recommendations-panel";
-import type { JSONMessage, ConnectionMessage } from "@humeai/voice-react";
-import { useVoice } from "@humeai/voice-react";
 import { useEffect, useRef, useState } from "react";
 
 export default function ChatWithRecommendations({
@@ -12,103 +11,106 @@ export default function ChatWithRecommendations({
 }: {
   accessToken: string;
 }) {
+  // ① Wrap _everything_ below in a single VoiceProvider
   return (
-    <>
-      {/* First render <Chat> so that its <VoiceProvider> appears in the tree */}
-      <Chat accessToken={accessToken} />
-
-      {/* Now we mount a child that calls useVoice() _after_ VoiceProvider is present */}
-      <FetchRecommendationsInsideProvider />
-    </>
+    <VoiceProvider
+      auth={{ type: "accessToken", value: accessToken }}
+      configId={process.env.NEXT_PUBLIC_HUME_CONFIG_ID}
+    >
+      <InnerWithRecommendations />
+    </VoiceProvider>
   );
 }
 
-function FetchRecommendationsInsideProvider() {
-  // SAFE to call useVoice() here because <Chat> has already mounted its VoiceProvider above.
-  const { status, messages } = useVoice();
+// ② Move any useVoice() calls into a component that is now inside the above VoiceProvider
+function InnerWithRecommendations() {
+  const { status, messages, latestUserEmotion } = useVoice();
   const messagesRef = useRef<HTMLDivElement>(null);
 
-  // Helper: scan messages from newest to oldest and pick the first one that has prosody.scores
-  
-    const rawLatestMessage = messages
-    .slice()
-    .reverse()
-    .find((m: JSONMessage | ConnectionMessage) => {
-        return (
-        m.type === "user_message" &&
-        typeof (m as any).models?.prosody?.scores === "object"
-        );
-    });
-
-  // At this point, rawLatestMessage is either undefined (if no message with prosody)
-  // or it is some message object with .models.prosody.scores present. We'll cast it to `any`
-  // so TypeScript stops complaining—because we've already done the runtime check above.
-  const latestUserMsg = (rawLatestMessage as any) || null;
-
-  // Extract numeric scores safely, or null if absent
-  const scores: Record<string, number> | null =
-    latestUserMsg?.models?.prosody?.scores ?? null;
-
-  // Compute "dominantEmotion" by picking the key with the highest score
-  let dominantEmotion: string | null = null;
-  if (scores) {
-    const sorted = Object.entries(scores).sort(([, aVal], [, bVal]) => bVal - aVal);
-    if (sorted.length > 0) {
-      dominantEmotion = sorted[0][0]; // the emotion‐tag string
-    }
-  }
-
-  // Lowercase version for API call (e.g. "anxiety", "sad", etc.)
-  const emotionLower = dominantEmotion?.toLowerCase() ?? null;
-
-  // Track the last emotion for which we fetched recommendations
-  const lastFetchedEmotion = useRef<string | null>(null);
-
-  // Store fetched recommendations
   const [recommendations, setRecommendations] = useState<{
     breathing: any[];
     music: any[];
     quotes: any[];
   }>({ breathing: [], music: [], quotes: [] });
 
-  // Whenever Hume gives us a new dominantEmotion, fetch /api/recommendations
+  const lastFetchedEmotion = useRef<string | null>(null);
+
+  // ─── Scroll logic (copied from your ChatContent) ──────────────
   useEffect(() => {
-    if (
-      status.value === "connected" &&        // must be connected
-      emotionLower &&                         // we have a detectedEmotion
-      emotionLower !== lastFetchedEmotion.current // and it’s different from last time
-    ) {
-      lastFetchedEmotion.current = emotionLower;
-
-      fetch(`/api/recommendations?emotion=${encodeURIComponent(emotionLower)}`)
-        .then(async (res) => {
-          if (!res.ok) {
-            console.error("Recommendation API error:", await res.text());
-            return { breathing: [], music: [], quotes: [] };
-          }
-          return (await res.json()) as {
-            breathing: any[];
-            music: any[];
-            quotes: any[];
-          };
-        })
-        .then((data) => {
-          setRecommendations(data);
-        })
-        .catch((err) => {
-          console.error("Failed to fetch recommendations:", err);
-        });
+    if (messages.length > 0 && messagesRef.current) {
+      const scrollHeight = messagesRef.current.scrollHeight;
+      messagesRef.current.scrollTo({
+        top: scrollHeight,
+        behavior: "smooth",
+      });
     }
-  }, [status.value, emotionLower]);
+  }, [messages.length]);
 
-  // If we haven’t connected to Hume yet, render nothing (Chat itself shows its HomeScreen)
+  // ─── Hide/show scrollbar classes (copied from ChatContent) ────
+  useEffect(() => {
+    const scrollWrapper = document.querySelector(".hide-scrollbar");
+    if (scrollWrapper) {
+      if (status.value !== "connected") {
+        scrollWrapper.classList.add("overflow-hidden", "h-auto");
+        scrollWrapper.classList.remove("overflow-y-scroll", "h-full");
+      } else {
+        scrollWrapper.classList.remove("overflow-hidden", "h-auto");
+        scrollWrapper.classList.add("overflow-y-scroll", "h-full");
+      }
+    }
+    return () => {
+      if (scrollWrapper) {
+        scrollWrapper.classList.remove("overflow-hidden", "h-auto");
+        scrollWrapper.classList.add("overflow-y-scroll", "h-full");
+      }
+    };
+  }, [status.value]);
+
+  // ─── When Hume returns a new dominant emotion, fetch your /api/recommendations ───
+  useEffect(() => {
+    async function fetchRecommendationsFor(emotion: string) {
+      try {
+        const res = await fetch(`/api/recommendations?emotion=${emotion}`);
+        if (!res.ok) {
+          console.error("Recommendation API error:", await res.text());
+          return;
+        }
+        const json = (await res.json()) as {
+          breathing: any[];
+          music: any[];
+          quotes: any[];
+        };
+        setRecommendations(json);
+      } catch (err) {
+        console.error("Failed to fetch recommendations:", err);
+      }
+    }
+
+    if (
+      status.value === "connected" &&
+      latestUserEmotion.value &&
+      latestUserEmotion.value !== lastFetchedEmotion.current
+    ) {
+      const em = latestUserEmotion.value.toLowerCase();
+      lastFetchedEmotion.current = em;
+      fetchRecommendationsFor(em);
+    }
+  }, [latestUserEmotion.value, status.value]);
+
+  // ─── If not yet “connected” to Hume, show <Chat>’s HomeScreen UI ────────────
   if (status.value !== "connected") {
-    return null;
+    // (This effectively renders Chat’s own “HomeScreen” since Chat internally
+    //  puts its HomeScreen when it’s not connected.)
+    return <Chat accessToken={""} />;
   }
 
-  // Once connected, append the RecommendationsPanel below Chat’s UI
+  // ─── Otherwise, render the normal chat UI + recommendations panel ──────────
   return (
     <div className="relative mx-auto flex w-full grow flex-col overflow-hidden">
+      {/* 1) The actual chat UI (Messages, Controls, StartConversation, etc.) */}
+      <Chat accessToken={""} />
+
+      {/* 2) Then, append your recommendations panel below */}
       <RecommendationsPanel recommendations={recommendations} />
     </div>
   );

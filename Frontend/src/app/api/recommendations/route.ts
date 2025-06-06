@@ -1,4 +1,4 @@
-// src/app/api/recommendations/route.ts
+
 
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
