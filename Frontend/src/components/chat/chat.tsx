@@ -25,15 +25,23 @@ function HomeScreen() {
         <div className="flex size-24 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/30">
           <Image src="/logo.svg" width={96} height={96} alt="EmotiChat Logo" />
         </div>
-        <h2
+        <motion.h2
           className="mt-8 text-center font-semibold text-[32px] text-gray-900 dark:text-white break-words"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           style={{ minHeight: 44 }}
         >
           {greeting}
-        </h2>
-        <p className="mt-2 max-w-md text-center text-gray-600 leading-[24px] dark:text-gray-300 break-words">
+        </motion.h2>
+        <motion.p
+          className="mt-2 max-w-md text-center text-gray-600 leading-[24px] dark:text-gray-300 break-words"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+        >
           How are you feeling today? I'm here to listen and support you!
-        </p>
+        </motion.p>
         <div className="mt-8 flex w-full justify-center">
           <StartConversation inline />
         </div>
