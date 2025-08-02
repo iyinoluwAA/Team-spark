@@ -33,19 +33,8 @@ function HomeScreen() {
     return "Good evening!";
   }
 
-  // Temporarily hardcode to test
-  const greeting = "Good morning!";
-  const greetingTyped = greeting;
-
-  // Debug: Log the greeting to console
-  console.log("Greeting value:", greeting);
-  console.log("Greeting length:", greeting.length);
-  console.log(
-    "Greeting characters:",
-    greeting
-      .split("")
-      .map((char, i) => `${i}: '${char}' (${char.charCodeAt(0)})`)
-  );
+  const greeting = getGreeting();
+  const greetingTyped = useTypewriter(greeting, 70);
 
   return (
     <div className="flex h-full w-full flex-1 items-center justify-center">
@@ -58,18 +47,10 @@ function HomeScreen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          style={{
-            minHeight: 44,
-            fontFamily: "system-ui, -apple-system, sans-serif",
-            letterSpacing: "0.025em",
-          }}
+          style={{ minHeight: 44 }}
         >
-          Good morning!
+          {greetingTyped}
         </motion.h2>
-        {/* Test div to see if the issue is with motion or text rendering */}
-        <div className="mt-4 text-center text-[32px] font-semibold text-red-600">
-          Test: Good morning!
-        </div>
         <motion.p
           className="mt-2 max-w-md text-center text-gray-600 leading-[24px] dark:text-gray-300 break-words"
           initial={{ x: -40, opacity: 0 }}
