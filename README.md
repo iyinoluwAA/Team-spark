@@ -1,12 +1,12 @@
-# EmotiChat AI - Your AI Companion for Emotional Wellness & Healing
+# EmotiChat AI - Your AI Companion for Emotional Wellness
 
-## Video demo of EmotiChat AI
-https://youtu.be/obLh5EK1nqw?si=o3Iefi--lRcTwDap
+<p align="center">
+  <a href="https://youtu.be/obLh5EK1nqw?si=o3Iefi--lRcTwDap">Video Demo</a> |
+  <a href="https://emotichat-ai.vercel.app">Website</a>
 
-## EmotiChat Website Url
-emotichat-ai.vercel.app/
+## Overview
 
-EmotiChat is an AI-driven emotional wellness and healing platform designed to help individuals recognize, reflect, and heal from deep-rooted emotional wounds through personalized conversations. Simply talk or chat with an empathetic AI that listens to your pains and understands you based on your emotional state, helping you remain calm and grounded amidst life's challenges.
+EmotiChat is an AI-powered emotional wellness companion platform designed to help individuals recognize, reflect on, and heal from deep-rooted emotional wounds through personalized voice and text conversations. Simply talk or chat with an empathetic AI that listens to your pain and understands you based on your emotional state, helping you remain calm and grounded amidst life's challenges.
 
 ## Problem Statement
 
@@ -27,10 +27,10 @@ EmotiChat AI is an AI-driven emotional wellness platform that helps individuals 
 
 ### Core Features
 
--   **Voice & Text Chatbot with Emotion Analysis**
+-   **Voice & Text Chat Interface with Advanved Emotion Analysis**
 
     -   Natural conversation with an empathetic AI assistant
-    -   Real-time emotion detection from voice inputs
+    -   Real-time emotion detection through voice abalysis
     -   Personalized responses based on emotional state
     -   Visual feedback on detected emotions
 
@@ -61,7 +61,7 @@ EmotiChat AI is an AI-driven emotional wellness platform that helps individuals 
 
 ### Frontend
 
--   **Framework**: [Next.js 14](https://nextjs.org),
+-   **Framework**: [Next.js 15](https://nextjs.org),
 -   **Language:** [TypeScript](https://www.typescriptlang.org/)
 -   **Styling**: [Tailwind CSS 4](https://tailwindcss.com)
 -   **UI Components**: [Shadcn UI](https://ui.shadcn.com/)
@@ -107,11 +107,13 @@ EmotiChat AI is an AI-driven emotional wellness platform that helps individuals 
     ```
 
     Then edit `.env.local` and add your API keys:
-    -NEXT_PUBLIC_APP_URL - Your application URL
 
+    ```env
+    -NEXT_PUBLIC_APP_URL - Your application URL
     - `HUME_API_KEY` - Your Hume AI API key
     - `HUME_SECRET_KEY` - Your Hume AI secret key
     - `NEXT_PUBLIC_HUME_CONFIG_ID` - Your Hume config ID
+    ```
 
 4. Start the development server:
 
