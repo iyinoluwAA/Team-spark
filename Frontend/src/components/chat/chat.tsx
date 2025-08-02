@@ -8,33 +8,16 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ReactNode, useEffect, useRef, useState } from "react";
 
-// Move useTypewriter outside the component
-function useTypewriter(text: string, speed = 70) {
-  const [displayed, setDisplayed] = useState("");
-  useEffect(() => {
-    setDisplayed("");
-    let i = 0;
-    const interval = setInterval(() => {
-      setDisplayed((prev) => (i < text.length ? prev + text[i] : prev));
-      i++;
-      if (i >= text.length) clearInterval(interval);
-    }, speed);
-    return () => clearInterval(interval);
-  }, [text, speed]);
-  return displayed;
-}
-
 // Home screen component to avoid conditional rendering with hooks
 function HomeScreen() {
-  function getGreeting() {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning!";
-    if (hour < 18) return "Good afternoon!";
-    return "Good evening!";
-  }
+  const [greeting, setGreeting] = useState("");
 
-  const greeting = getGreeting();
-  const greetingTyped = useTypewriter(greeting, 70);
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good morning!");
+    else if (hour < 18) setGreeting("Good afternoon!");
+    else setGreeting("Good evening!");
+  }, []);
 
   return (
     <div className="flex h-full w-full flex-1 items-center justify-center">
@@ -42,23 +25,15 @@ function HomeScreen() {
         <div className="flex size-24 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/30">
           <Image src="/logo.svg" width={96} height={96} alt="EmotiChat Logo" />
         </div>
-        <motion.h2
+        <h2
           className="mt-8 text-center font-semibold text-[32px] text-gray-900 dark:text-white break-words"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
           style={{ minHeight: 44 }}
         >
-          {greetingTyped}
-        </motion.h2>
-        <motion.p
-          className="mt-2 max-w-md text-center text-gray-600 leading-[24px] dark:text-gray-300 break-words"
-          initial={{ x: -40, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.7, type: "spring" }}
-        >
+          {greeting}
+        </h2>
+        <p className="mt-2 max-w-md text-center text-gray-600 leading-[24px] dark:text-gray-300 break-words">
           How are you feeling today? I'm here to listen and support you!
-        </motion.p>
+        </p>
         <div className="mt-8 flex w-full justify-center">
           <StartConversation inline />
         </div>
