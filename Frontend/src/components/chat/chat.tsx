@@ -38,12 +38,12 @@ function HomeScreen() {
 
   return (
     <div className="flex h-full w-full flex-1 items-center justify-center">
-      <div className="flex w-full max-w-md flex-col items-center justify-center px-4 py-8">
+      <div className="flex w-full max-w-lg flex-col items-center justify-center px-4 py-8">
         <div className="flex size-24 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/30">
           <Image src="/logo.svg" width={96} height={96} alt="EmotiChat Logo" />
         </div>
         <motion.h2
-          className="mt-8 text-center font-semibold text-[32px] text-gray-900 dark:text-white"
+          className="mt-8 text-center font-semibold text-[32px] text-gray-900 dark:text-white break-words"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -52,7 +52,7 @@ function HomeScreen() {
           {greetingTyped}
         </motion.h2>
         <motion.p
-          className="mt-2 max-w-[384px] text-center text-gray-600 leading-[24px] dark:text-gray-300"
+          className="mt-2 max-w-md text-center text-gray-600 leading-[24px] dark:text-gray-300 break-words"
           initial={{ x: -40, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.7, type: "spring" }}
@@ -128,7 +128,9 @@ function ChatContent() {
   return status.value !== "connected" ? (
     <HomeScreen />
   ) : (
-    <div className={"relative mx-auto flex w-full grow flex-col overflow-hidden"}>
+    <div
+      className={"relative mx-auto flex w-full grow flex-col overflow-hidden"}
+    >
       <Messages ref={messagesRef} />
       <Controls />
       <StartConversation />
