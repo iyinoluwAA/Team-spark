@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package emotichat;
+
+
+// Core service for EmotiChat emotional wellness system
+service emotichat {
+  rpc AnalyzeEmotion(VoiceTextRequest) returns (EmotionAnalysisResponse);
+  rpc GetRecommendedTherapy(EmotionRequest) returns (TherapyRecommendationResponse);
+  rpc StartBreathingSession(BreathingSessionRequest) returns (BreathingGuideResponse);
+  rpc GetInspirationalQuote(QuoteRequest) returns (QuoteResponse);
+  rpc LogUserInteraction(UserInteractionRequest) returns (InteractionLogResponse);
+  rpc GetSessionSummary(SessionSummaryRequest) returns (SessionSummaryResponse);
+}
+
+// Request to analyze user emotion from text/audio input
+message VoiceTextRequest {
+  string user_id = 1;
+  string input_text = 2;
+  string audio_file_path = 3;
+  string language = 4;
+  string timestamp = 5;
+}
+
+// Response with the analyzed emotion and its confidence score
+message EmotionAnalysisResponse {
+  string emotion = 1;
+  float confidence_score = 2;
+  string timestamp = 3;
+  string analysis_notes = 4;
+}
+
+// Request to get a therapy recommendation based on detected emotion
+message EmotionRequest {
+  string user_id = 1;
+  string detected_emotion = 2;
+  string timestamp = 3;
+}
+
+// Response containing the therapy recommendation
+message TherapyRecommendationResponse {
+  string therapy_type = 1;
+  string description = 2;
+  string media_link = 3;
+  string duration = 4;
+  repeated string recommended_activities = 5;
+}
+
+// Request to start a breathing guide session
+message BreathingSessionRequest {
+  string user_id = 1;
+  string emotion_context = 2;
+  string timestamp = 3;
+}
+
+// Response providing the breathing guide
+message BreathingGuideResponse {
+  string guide_text = 1;
+  int32 inhale_duration = 2;
+  int32 hold_duration = 3;
+  int32 exhale_duration = 4;
+  string audio_guide_link = 5;
+}
+
+// Request for an inspirational quote based on emotion
+message QuoteRequest {
+  string user_id = 1;
+  string emotion_context = 2;
+  string timestamp = 3;
+}
+
+// Response with a motivational quote
+message QuoteResponse {
+  string quote = 1;
+  string author = 2;
+}
+
+// Request to log user interactions during a session
+message UserInteractionRequest {
+  string user_id = 1;
+  string session_id = 2;
+  string action_type = 3;
+  string content = 4;
+  string timestamp = 5;
+}
+
+// Response to confirm interaction logging
+message InteractionLogResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Request to get a summary of an emotional support session
+message SessionSummaryRequest {
+  string user_id = 1;
+  string session_id = 2;
+}
+
+// Response with session summary details
+message SessionSummaryResponse {
+  string session_id = 1;
+  string user_id = 2;
+  repeated string emotions_detected = 3;
+  string dominant_emotion = 4;
+  string summary_notes = 5;
+  repeated string recommended_followups = 6;
+}
+
+
