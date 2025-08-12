@@ -9,7 +9,13 @@ import Image from "next/image";
 import { ReactNode, useEffect, useRef, useState } from "react";
 
 // Home screen component to avoid conditional rendering with hooks
-function HomeScreen() {
+function HomeScreen({
+  configId,
+  accessToken,
+}: {
+  configId?: string;
+  accessToken: string;
+}) {
   const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
@@ -26,7 +32,7 @@ function HomeScreen() {
           <Image src="/logo.svg" width={96} height={96} alt="EmotiChat Logo" />
         </div>
         <motion.h2
-          className="mt-8 text-center font-semibold text-[32px] text-gray-900 dark:text-white break-words"
+          className="mt-8 break-words text-center font-semibold text-[32px] text-gray-900 dark:text-white"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -35,7 +41,7 @@ function HomeScreen() {
           {greeting}
         </motion.h2>
         <motion.p
-          className="mt-2 max-w-md text-center text-gray-600 leading-[24px] dark:text-gray-300 break-words"
+          className="mt-2 max-w-md break-words text-center text-gray-600 leading-[24px] dark:text-gray-300"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
@@ -43,7 +49,11 @@ function HomeScreen() {
           How are you feeling today? I'm here to listen and support you!
         </motion.p>
         <div className="mt-8 flex w-full justify-center">
-          <StartConversation inline />
+          <StartConversation
+            inline
+            configId={configId}
+            accessToken={accessToken}
+          />
         </div>
       </div>
     </div>
@@ -56,8 +66,6 @@ export default function Chat({ accessToken }: { accessToken: string }) {
 
   return (
     <VoiceProvider
-      auth={{ type: "accessToken", value: accessToken }}
-      configId={configId}
       onMessage={() => {
         if (timeout.current) {
           window.clearTimeout(timeout.current);
@@ -67,12 +75,18 @@ export default function Chat({ accessToken }: { accessToken: string }) {
         }, 200);
       }}
     >
-      <ChatContent />
+      <ChatContent configId={configId} accessToken={accessToken} />
     </VoiceProvider>
   );
 }
 
-function ChatContent() {
+function ChatContent({
+  configId,
+  accessToken,
+}: {
+  configId?: string;
+  accessToken: string;
+}) {
   const { status, messages } = useVoice();
   // Create the ref here instead of passing it down
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -109,14 +123,14 @@ function ChatContent() {
 
   // Use a separate component to render content based on status
   return status.value !== "connected" ? (
-    <HomeScreen />
+    <HomeScreen configId={configId} accessToken={accessToken} />
   ) : (
     <div
       className={"relative mx-auto flex w-full grow flex-col overflow-hidden"}
     >
       <Messages ref={messagesRef} />
       <Controls />
-      <StartConversation />
+      <StartConversation configId={configId} accessToken={accessToken} />
     </div>
   );
 }
