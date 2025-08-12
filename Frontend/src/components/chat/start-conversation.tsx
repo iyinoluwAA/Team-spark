@@ -5,8 +5,12 @@ import { Phone } from "lucide-react";
 
 export default function StartConversation({
   inline = false,
+  configId,
+  accessToken,
 }: {
   inline?: boolean;
+  configId?: string;
+  accessToken: string;
 }) {
   const { status, connect } = useVoice();
 
@@ -17,7 +21,10 @@ export default function StartConversation({
 
   // Handler for connect button
   const handleConnect = () => {
-    connect()
+    connect({
+      auth: { type: "accessToken", value: accessToken },
+      configId,
+    })
       .then(() => {})
       .catch(() => {})
       .finally(() => {});
@@ -30,7 +37,11 @@ export default function StartConversation({
       onClick={handleConnect}
     >
       <span>
-        <Phone className="size-4 opacity-50" strokeWidth={2} stroke="currentColor" />
+        <Phone
+          className="size-4 opacity-50"
+          strokeWidth={2}
+          stroke="currentColor"
+        />
       </span>
       <span>Start Convo or call</span>
     </Button>
@@ -45,7 +56,9 @@ export default function StartConversation({
   return (
     <AnimatePresence>
       <motion.div
-        className={"fixed inset-0 flex items-center justify-center bg-white p-4 dark:bg-gray-900"}
+        className={
+          "fixed inset-0 flex items-center justify-center bg-white p-4 dark:bg-gray-900"
+        }
         initial="initial"
         animate="enter"
         exit="exit"
